@@ -38,23 +38,35 @@ class Queue:
 
   def enqueue(self, item):
     enqueued = Node(item, self.head)
-    self.head.prevNode = enqueued
-    self.head = enqueued
     self.size += 1
+    if(self.head == None):
+      self.head = enqueued
+      self.tail = enqueued
+    else:
+      self.head.prevNode = enqueued
+      self.head = enqueued
 
   def dequeue(self):
-    self.tail = self.tail.prevNode
-    self.tail.nextNode = None
-    self.size -= 1
+    if(self.size > 0):
+      value = self.tail.value
+      self.tail = self.tail.prevNode
+      if(self.tail != None):
+        self.tail.nextNode = None
+      else:
+        self.head = None
+      self.size -= 1
+      return value
+    return None
+    
 
   def len(self):
     # return self.size
     if(self.head == None):
       return 0
     else:
-      return _countSize(self.head)
+      return self._countSize(self.head)
 
   def _countSize(self, node):
     if(node.nextNode == None):
       return 1
-    return 1  + _countSize(node.nextNode)
+    return 1  + self._countSize(node.nextNode)
