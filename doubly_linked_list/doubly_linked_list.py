@@ -1,7 +1,7 @@
 """Each ListNode holds a reference to its previous node
 as well as its next node in the List."""
 class ListNode:
-  def __init__(self, value, prev=None, next=None):
+  def __init__(self, value, next=None, prev=None):
     self.value = value
     self.prev = prev
     self.next = next
@@ -44,25 +44,97 @@ class DoublyLinkedList:
     return self.length
 
   def add_to_head(self, value):
-    pass
+    newHead = LinkList(value, self.head)
+    self.length += 1
+    if(self.head == None):
+      self.head = newHead
+      self.tail = newHead
+    else:
+      self.head.prev = newHead
+      self.head = newHead
 
   def remove_from_head(self):
-    pass
+    if(self.head == None):
+      return
+    value = self.head.value
+    self.head = self.head.next
+    self.length -= 1
+    if(self.head != None):
+      self.head.prev = None
+    return value
 
   def add_to_tail(self, value):
-    pass
+    newTail = ListNode(value, None, self.tail)
+    self.length += 1
+    if(self.tail == None):
+      self.tail = newTail
+      self.head = newTail
+    else:
+      self.tail.next = newTail
+      self.tail = newTail
+
 
   def remove_from_tail(self):
-    pass
+    # tail is none --> return
+    # tail is last item --> remove and return
+    # otherwise remove and return
+    if(self.tail == None):
+      return
+    value = self.tail.value
+    self.tail = self.tail.prev
+    self.length -= 1
+    if(self.tail != None):
+      self.tail.next = None
+    return value
 
   def move_to_front(self, node):
-    pass
+    # If node is head, do nothing
+    # If list has no length, do nothing
+    # If it's the tail, prev should be set to None
+    # Else, next node's prev should be current node's prev and vice versa
+      #  current node's next should be current head and prev node None
+    if(node == self.head or self.length == 0):
+      return
+    self._extract_node_to_ends(node, "head")
+    
+    
 
   def move_to_end(self, node):
-    pass
+    # If node is tail or list has no length, do nothing
+    # If node is head, head.next.prev is none
+
+    if(node == self.tail or self.length == 0):
+      return
+    self._extract_node_to_ends(node, "tail")
 
   def delete(self, node):
-    pass
-    
+    if(self.length == 0):
+      return None
+    self.length -= 1
+    _extract_node(node)
+    return node.value
+
   def get_max(self):
-    pass
+    current = self.head
+    max = None
+    while(current != None):
+      if(max == None or current.value > max):
+        max = current.value
+      current = current.next
+    return max
+    
+  def _extract_node_to_ends(self, node, position):
+    self._extract_node(node)
+    self[position].prev = node
+    node.next = self[position]
+    node.prev = None
+    self[position] = node
+
+  def _extract_node(self,node):
+    if(node == self.head):
+      node.next.prev = None
+    elif(node == self.tail):
+      node.prev.next = None
+    else:
+      node.next.prev = node.prev
+      node.prev.next = node.next
