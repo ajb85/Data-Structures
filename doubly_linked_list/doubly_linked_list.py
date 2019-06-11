@@ -44,7 +44,7 @@ class DoublyLinkedList:
     return self.length
 
   def add_to_head(self, value):
-    newHead = LinkList(value, self.head)
+    newHead = ListNode(value, self.head)
     self.length += 1
     if(self.head == None):
       self.head = newHead
@@ -61,6 +61,8 @@ class DoublyLinkedList:
     self.length -= 1
     if(self.head != None):
       self.head.prev = None
+    else:
+      self.tail = None
     return value
 
   def add_to_tail(self, value):
@@ -85,6 +87,8 @@ class DoublyLinkedList:
     self.length -= 1
     if(self.tail != None):
       self.tail.next = None
+    else:
+      self.head = None
     return value
 
   def move_to_front(self, node):
@@ -111,7 +115,7 @@ class DoublyLinkedList:
     if(self.length == 0):
       return None
     self.length -= 1
-    _extract_node(node)
+    self._extract_node(node)
     return node.value
 
   def get_max(self):
@@ -125,16 +129,27 @@ class DoublyLinkedList:
     
   def _extract_node_to_ends(self, node, position):
     self._extract_node(node)
-    self[position].prev = node
-    node.next = self[position]
-    node.prev = None
-    self[position] = node
+    
+    old_node = getattr(self, position)
+    link_new_to_old = "next" if position == "head" else "prev"
+    link_old_to_new = "prev" if position == "head" else "next"
+    setattr(old_node, link_old_to_new, node)
+
+    setattr(node, link_new_to_old, old_node)
+    setattr(node, link_old_to_new, None)
+    setattr(self, position, node)
 
   def _extract_node(self,node):
-    if(node == self.head):
+    if(node == self.head and node == self.tail):
+      self.head = None
+      self.tail = None
+      self.length = 0
+    elif(node == self.head):
       node.next.prev = None
+      self.head = node.next
     elif(node == self.tail):
       node.prev.next = None
+      self.tail = node.prev
     else:
       node.next.prev = node.prev
       node.prev.next = node.next
