@@ -10,43 +10,27 @@ class BinarySearchTree:
     # Else, move to next node to repeat
     if(value > self.value):
       if(self.right == None):
-        # Create node
+        self.right = BinarySearchTree(value)
       else:
         self.right.insert(value)
     elif(value < self.value):
-      if(self.right == None):
-        # Create node
+      if(self.left == None):
+        self.left = BinarySearchTree(value)
       else:
-        self.left.insert(value)
-    else:
-      return
-    
+        self.left.insert(value)    
 
   def contains(self, target):
-    # Value is greater or less than, move right or left.  If the same, return True
-    # When moving, check for None.  If found, return False.  Else, recursion
-    if(target > self.value):
-      if(self.right == None):
-        return False
-      else:
-        self.right(target)
-    elif(target < self.value):
-      if(self.left == None):
-        return False
-      else:
-        self.left(target)
-    else:
+    if(target == self.value):
       return True
-
+    leftContains = self.left.contains(target) if self.left != None else False
+    rightContains = self.right.contains(target) if self.right != None else False
+    return leftContains or rightContains
 
   def get_max(self):
     # Greater numbers to the right, always check right until None.
-    right = self.right
-    while right != None:
-      if(right.right == None):
-        return self.value
-      else:
-        right = right.right
+    if(self.right == None):
+      return self.value
+    return self.right.get_max()
 
   def for_each(self, cb):
     if(self.left != None):
