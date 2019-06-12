@@ -8,17 +8,19 @@ class Heap:
 
   def insert(self, value):
     self.storage.append(value)
-    index = len(self.storage) - 1
-    while(index != None):
-      index = self._bubble_up(index)
-    
+    self._bubble_up(len(self.storage) - 1)
 
   def delete(self):
+    length = len(self.storage)
+    if(length == 0):
+      return None
     value = self.storage[0]
-    self.storage[0] = self.storage.pop()
-    index = 0
-    while index != None:
-      index = _sift_down(self.storage[index])
+    if(length > 1):
+      self.storage[0] = self.storage.pop()
+      self._sift_down(0)
+    else:
+      self.storage.pop()
+    return value
 
   def get_max(self):
     return self.storage[0]
@@ -27,12 +29,14 @@ class Heap:
     return len(self.storage)
 
   def _bubble_up(self, index):
-    if(index <= 0):
+    if(index == None or index <= 0):
       return None
     pIndex = round(index/2 - 1) if index % 2 == 0 else round(index/2 - 0.5)
-    return self._compare_and_swap_nodes(pIndex, index)
+    self._bubble_up(self._compare_and_swap_nodes(pIndex, index, "child"))
 
   def _sift_down(self, index):
+    if(index == None):
+      return None
     left = 2*index + 1
     right = 2*index + 2
     if(left > len(self.storage)-1):
@@ -41,13 +45,16 @@ class Heap:
       cIndex = left
     else:
       cIndex = left if self.comparator(self.storage[left], self.storage[right]) else right
-    return self._compare_and_swap_nodes(index, cIndex)
 
-  def _compare_and_swap_nodes(pIndex, cIndex):
+    self._sift_down(self._compare_and_swap_nodes(index, cIndex))
+
+  def _compare_and_swap_nodes(self, pIndex, cIndex, node="parent"):
+    if(self.storage[cIndex] == self.storage[pIndex]):
+      return None    
     isInOrder = self.comparator(self.storage[pIndex], self.storage[cIndex])
     if(not isInOrder):
       self.storage[pIndex], self.storage[cIndex] = self.storage[cIndex], self.storage[pIndex]
-      return cIndex
+      return cIndex if node=="parent" else pIndex
     return None
 
 
