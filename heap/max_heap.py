@@ -56,8 +56,3 @@ class Heap:
       self.storage[pIndex], self.storage[cIndex] = self.storage[cIndex], self.storage[pIndex]
       return cIndex if node=="parent" else pIndex
     return None
-
-
-
-  def _get_children(self, index):
-    return {"left": 2*index + 1, "right": 2*index + 2}
