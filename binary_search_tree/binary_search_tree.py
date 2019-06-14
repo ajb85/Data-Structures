@@ -21,10 +21,14 @@ class BinarySearchTree:
 
   def contains(self, target):
     if(target == self.value):
-      return True
-    leftContains = self.left.contains(target) if self.left != None else False
-    rightContains = self.right.contains(target) if self.right != None else False
-    return leftContains or rightContains
+            return True
+        elif(target > self.value):
+            rightContains = self.right.contains(target) if self.right != None else False
+            leftContains = False
+        else:
+            leftContains = self.left.contains(target) if self.left != None else False
+            rightContains = False
+        return leftContains or rightContains
 
   def get_max(self):
     # Greater numbers to the right, always check right until None.
